@@ -1,0 +1,5 @@
+project_id = "cloud-insights-data-dev"
+prefix     = "cni-data-ai"
+region     = "europe-west1"
+zone       = "europe-west1-b"
+env        = "dev"

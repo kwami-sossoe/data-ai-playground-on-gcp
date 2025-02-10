@@ -17,7 +17,7 @@ resource "google_vertex_ai_metadata_store" "store" {
 }
 
 module "service-account-notebook" {
-  source     = "../cloud-foundataion-fabric-modules/iam-service-account"
+  source     = "git::https://github.com/kwami-sossoe/cloud-foundation-fabric-modules.git//iam-service-account?ref=master"
   project_id = module.project.project_id
   name       = "notebook-sa"
   iam_project_roles = {
@@ -35,7 +35,7 @@ module "service-account-notebook" {
 }
 
 module "service-account-vertex" {
-  source     = "../cloud-foundataion-fabric-modules/iam-service-account"
+  source     = "git::https://github.com/kwami-sossoe/cloud-foundation-fabric-modules.git//iam-service-account?ref=master"
   project_id = module.project.project_id
   name       = "vertex-sa"
   iam_project_roles = {

@@ -14,7 +14,7 @@ locals {
 }
 
 module "project" {
-  source          = "../cloud-foundataion-fabric-modules/project"
+  source          = "git::https://github.com/kwami-sossoe/cloud-foundation-fabric-modules.git//project?ref=master"
   name            = var.project_id
   parent          = try(var.project_create.parent, null)
   billing_account = try(var.project_create.billing_account_id, null)

@@ -84,7 +84,7 @@ locals {
 
 module "gcs-bucket" {
   count          = var.bucket_name == null ? 0 : 1
-  source         = "../cloud-foundataion-fabric-modules/gcs"
+  source         = "git::https://github.com/kwami-sossoe/cloud-foundation-fabric-modules.git//gcs?ref=master"
   project_id     = module.project.project_id
   name           = var.bucket_name
   prefix         = var.prefix
@@ -98,7 +98,7 @@ module "gcs-bucket" {
 # Default bucket for Cloud Build to prevent error: "'us' violates constraint ‘gcp.resourceLocations’"
 # https://stackoverflow.com/questions/53206667/cloud-build-fails-with-resource-location-constraint
 module "gcs-bucket-cloudbuild" {
-  source         = "../cloud-foundataion-fabric-modules/gcs"
+  source         = "git::https://github.com/kwami-sossoe/cloud-foundation-fabric-modules.git//gcs?ref=master"
   project_id     = module.project.project_id
   name           = "${module.project.project_id}_cloudbuild"
   location       = var.region
@@ -110,7 +110,7 @@ module "gcs-bucket-cloudbuild" {
 
 module "bq-dataset" {
   count          = var.dataset_name == null ? 0 : 1
-  source         = "../cloud-foundataion-fabric-modules/bigquery-dataset"
+  source         = "git::https://github.com/kwami-sossoe/cloud-foundation-fabric-modules.git//bigquery-dataset?ref=master"
   project_id     = module.project.project_id
   id             = var.dataset_name
   location       = var.region
@@ -119,7 +119,7 @@ module "bq-dataset" {
 
 module "vpc-local" {
   count      = local.use_shared_vpc ? 0 : 1
-  source     = "../cloud-foundataion-fabric-modules/net-vpc"
+  source     = "git::https://github.com/kwami-sossoe/cloud-foundation-fabric-modules.git//net-vpc?ref=master"
   project_id = module.project.project_id
   name       = "vertex"
   subnets = [
@@ -140,7 +140,7 @@ module "vpc-local" {
 
 module "firewall" {
   count      = local.use_shared_vpc ? 0 : 1
-  source     = "../cloud-foundataion-fabric-modules/net-vpc-firewall"
+  source     = "git::https://github.com/kwami-sossoe/cloud-foundation-fabric-modules.git//net-vpc-firewall?ref=master"
   project_id = module.project.project_id
   network    = module.vpc-local[0].name
   default_rules_config = {
@@ -164,7 +164,7 @@ module "firewall" {
 
 module "cloudnat" {
   count          = local.use_shared_vpc ? 0 : 1
-  source         = "../cloud-foundataion-fabric-modules/net-cloudnat"
+  source         = "git::https://github.com/kwami-sossoe/cloud-foundation-fabric-modules.git//net-cloudnat?ref=master"
   project_id     = module.project.project_id
   region         = var.region
   name           = "default"
@@ -172,7 +172,7 @@ module "cloudnat" {
 }
 
 module "project" {
-  source            = "../cloud-foundataion-fabric-modules/project"
+  source            = "git::https://github.com/kwami-sossoe/cloud-foundation-fabric-modules.git//project?ref=master"
   name              = var.project_config.project_id
   parent            = var.project_config.parent
   billing_account   = var.project_config.billing_account_id
@@ -277,7 +277,7 @@ module "project" {
 }
 
 module "service-account-mlops" {
-  source     = "../cloud-foundataion-fabric-modules/iam-service-account"
+  source     = "git::https://github.com/kwami-sossoe/cloud-foundation-fabric-modules.git//iam-service-account?ref=master"
   name       = "${var.prefix}-sa-mlops"
   project_id = module.project.project_id
 }

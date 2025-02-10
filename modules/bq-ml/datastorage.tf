@@ -1,5 +1,5 @@
 module "bucket" {
-  source         = "../cloud-foundataion-fabric-modules/gcs"
+  source         = "git::https://github.com/kwami-sossoe/cloud-foundation-fabric-modules.git//gcs?ref=master"
   project_id     = module.project.project_id
   prefix         = var.prefix
   location       = var.location
@@ -9,7 +9,7 @@ module "bucket" {
 }
 
 module "dataset" {
-  source         = "../cloud-foundataion-fabric-modules/bigquery-dataset"
+  source         = "git::https://github.com/kwami-sossoe/cloud-foundation-fabric-modules.git//bigquery-dataset?ref=master"
   project_id     = module.project.project_id
   id             = "${replace(var.prefix, "-", "_")}_data"
   encryption_key = var.service_encryption_keys.bq
