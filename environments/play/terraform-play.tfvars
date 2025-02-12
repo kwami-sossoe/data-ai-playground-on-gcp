@@ -1,0 +1,5 @@
+project_id = "itg-data-solutions-fabric-dv"
+prefix     = "cni-data-ai"
+region     = "europe-west1"
+zone       = "europe-west1-b"
+env        = "play"

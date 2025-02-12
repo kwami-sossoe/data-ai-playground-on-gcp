@@ -24,7 +24,7 @@ resource "google_iam_workload_identity_pool_provider" "github_provider" {
 }
 
 module "artifact_registry" {
-  source     = "../cloud-foundataion-fabric-modules/artifact-registry"
+  source     = "git::https://github.com/kwami-sossoe/cloud-foundation-fabric-modules.git//artifact-registry?ref=master"
   name       = "docker-repo"
   project_id = module.project.project_id
   location   = var.region
@@ -32,7 +32,7 @@ module "artifact_registry" {
 }
 
 module "service-account-github" {
-  source     = "../cloud-foundataion-fabric-modules/iam-service-account"
+  source     = "git::https://github.com/kwami-sossoe/cloud-foundation-fabric-modules.git//iam-service-account?ref=master"
   name       = "${var.prefix}-sa-github"
   project_id = module.project.project_id
   iam        = var.identity_pool_claims == null ? {} : { "roles/iam.workloadIdentityUser" = ["principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.github_pool[0].name}/${var.identity_pool_claims}"] }
@@ -41,7 +41,7 @@ module "service-account-github" {
 # NOTE: Secret manager module at the moment does not support CMEK
 module "secret-manager" {
   project_id = module.project.project_id
-  source     = "../cloud-foundataion-fabric-modules/secret-manager"
+  source     = "git::https://github.com/kwami-sossoe/cloud-foundation-fabric-modules.git//secret-manager?ref=master"
   secrets = {
     github-key = {
       locations = [var.region]

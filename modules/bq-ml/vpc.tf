@@ -1,5 +1,5 @@
 module "vpc" {
-  source     = "../cloud-foundataion-fabric-modules/net-vpc"
+  source     = "git::https://github.com/kwami-sossoe/cloud-foundation-fabric-modules.git//net-vpc?ref=master"
   count      = local.use_shared_vpc ? 0 : 1
   project_id = module.project.project_id
   name       = "${var.prefix}-vpc"
@@ -13,7 +13,7 @@ module "vpc" {
 }
 
 module "vpc-firewall" {
-  source     = "../cloud-foundataion-fabric-modules/net-vpc-firewall"
+  source     = "git::https://github.com/kwami-sossoe/cloud-foundation-fabric-modules.git//net-vpc-firewall?ref=master"
   count      = local.use_shared_vpc ? 0 : 1
   project_id = module.project.project_id
   network    = module.vpc[0].name
@@ -32,7 +32,7 @@ module "vpc-firewall" {
 }
 
 module "cloudnat" {
-  source         = "../cloud-foundataion-fabric-modules/net-cloudnat"
+  source         = "git::https://github.com/kwami-sossoe/cloud-foundation-fabric-modules.git//net-cloudnat?ref=master"
   count          = local.use_shared_vpc ? 0 : 1
   project_id     = module.project.project_id
   name           = "${var.prefix}-default"

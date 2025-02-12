@@ -38,7 +38,7 @@ locals {
 }
 
 module "project" {
-  source          = "../cloud-foundataion-fabric-modules/project"
+  source          = "git::https://github.com/kwami-sossoe/cloud-foundation-fabric-modules.git//project?ref=master"
   name            = var.project_id
   parent          = try(var.project_create.parent, null)
   billing_account = try(var.project_create.billing_account_id, null)
@@ -88,7 +88,7 @@ module "project" {
 ###############################################################################
 
 module "vpc" {
-  source     = "../cloud-foundataion-fabric-modules/net-vpc"
+  source     = "git::https://github.com/kwami-sossoe/cloud-foundation-fabric-modules.git//net-vpc?ref=master"
   count      = local.use_shared_vpc ? 0 : 1
   project_id = module.project.project_id
   name       = "${var.prefix}-vpc"
@@ -102,7 +102,7 @@ module "vpc" {
 }
 
 module "vpc-firewall" {
-  source     = "../cloud-foundataion-fabric-modules/net-vpc-firewall"
+  source     = "git::https://github.com/kwami-sossoe/cloud-foundation-fabric-modules.git//net-vpc-firewall?ref=master"
   count      = local.use_shared_vpc ? 0 : 1
   project_id = module.project.project_id
   network    = module.vpc[0].name
@@ -121,7 +121,7 @@ module "vpc-firewall" {
 }
 
 module "cloudnat" {
-  source         = "../cloud-foundataion-fabric-modules/net-cloudnat"
+  source         = "git::https://github.com/kwami-sossoe/cloud-foundation-fabric-modules.git//net-cloudnat?ref=master"
   count          = local.use_shared_vpc ? 0 : 1
   project_id     = module.project.project_id
   name           = "${var.prefix}-default"
@@ -142,7 +142,7 @@ resource "google_project_iam_member" "shared_vpc" {
 ###############################################################################
 
 module "bucket" {
-  source         = "../cloud-foundataion-fabric-modules/gcs"
+  source         = "git::https://github.com/kwami-sossoe/cloud-foundation-fabric-modules.git//gcs?ref=master"
   project_id     = module.project.project_id
   prefix         = var.prefix
   location       = var.location
@@ -152,7 +152,7 @@ module "bucket" {
 }
 
 module "dataset" {
-  source         = "../cloud-foundataion-fabric-modules/bigquery-dataset"
+  source         = "git::https://github.com/kwami-sossoe/cloud-foundation-fabric-modules.git//bigquery-dataset?ref=master"
   project_id     = module.project.project_id
   id             = "${replace(var.prefix, "-", "_")}_data"
   encryption_key = var.service_encryption_keys.bq
@@ -163,7 +163,7 @@ module "dataset" {
 ###############################################################################
 
 module "service-account-notebook" {
-  source     = "../cloud-foundataion-fabric-modules/iam-service-account"
+  source     = "git::https://github.com/kwami-sossoe/cloud-foundation-fabric-modules.git//iam-service-account?ref=master"
   project_id = module.project.project_id
   name       = "notebook-sa"
   iam_project_roles = {

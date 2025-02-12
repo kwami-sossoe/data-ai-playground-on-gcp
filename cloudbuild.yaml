@@ -1,0 +1,57 @@
+timeout: '3600s'
+
+steps:
+- id: 'environment'
+  name: 'alpine'
+  entrypoint: 'sh'  
+  args: 
+  - '-c'
+  - | 
+      echo "***********************"
+      echo "BRANCH_NAME : $BRANCH_NAME"
+      echo "ENV         : $_ENV"
+      echo "***********************"
+
+# cni-tf-INIT
+- id: 'cni-tf-init'
+  name: 'hashicorp/terraform:$_TERRAFORM_VERSION'
+  entrypoint: 'sh'
+  args: 
+  - '-c'
+  - |
+      terraform --version
+      terraform -chdir=bootstrap fmt
+      terraform -chdir=bootstrap init -backend-config=../environments/${_ENV}/tf-backend-${_ENV}.conf
+# [END tf-init]
+
+# cni-tf-PLAN
+- id: 'cni-tf-plan'
+  name: 'hashicorp/terraform:$_TERRAFORM_VERSION'
+  entrypoint: 'sh'
+  args: 
+  - '-c'
+  - | 
+      terraform -chdir=bootstrap plan -var-file="../environments/${_ENV}/terraform-${_ENV}.tfvars"  -out="../../${_ENV}-planfile" -input=false -compact-warnings
+      terraform -chdir=bootstrap validate
+      
+      # Upload ${_ENV}-planfile to Cloud Storage (using gsutil)
+      # gsutil cp ${_ENV}-planfile gs://$_TF_GCS_BUCKET/tf-plans/$(BUILD_ID)/${_ENV}-planfile
+
+      # Optional: Save ${_ENV}-planfile as an artifact (for easier download)
+      # echo "${_ENV}-planfile saved to gs://$_TF_GCS_BUCKET/tf-plans/$(BUILD_ID)/${_ENV}-planfile"
+
+      echo "ls ../../${_ENV}-planfile"
+      ls ../../${_ENV}-planfile
+
+      pwd 
+
+      mv ../../${_ENV}-planfile ${_ENV}-planfile
+# artifacts:
+#   objects:
+#     location: gs://$_TF_GCS_BUCKET/artifacts/${BUILD_ID}/
+#     paths:
+#       - ../../${_ENV}-planfile
+# [END tf-plan]
+
+options:
+  logging: CLOUD_LOGGING_ONLY
