@@ -1,0 +1,36 @@
+timeout: '7200s'
+
+steps:
+- id: 'environment'
+  name: 'alpine'
+  entrypoint: 'sh'  
+  args: 
+  - '-c'
+  - | 
+      echo "***********************"
+      echo "BRANCH_NAME : $BRANCH_NAME"
+      echo "ENV         : $_ENV"
+      echo "***********************"
+
+# cni-tf-INIT
+- id: 'cni-tf-init'
+  name: 'hashicorp/terraform:$_TERRAFORM_VERSION'
+  entrypoint: 'sh'
+  args: 
+  - '-c'
+  - |
+      terraform -chdir=bootstrap init -backend-config=../environments/${_ENV}/tf-backend-${_ENV}.conf
+# [END tf-init]
+
+# cni-tf-DESTROY
+- id: 'cni-tf-destroy'
+  name: 'hashicorp/terraform:$_TERRAFORM_VERSION'
+  entrypoint: 'sh'
+  args: 
+  - '-c'
+  - | 
+      terraform -chdir=bootstrap destroy -auto-approve -var-file="../environments/${_ENV}/terraform-${_ENV}.tfvars" -compact-warnings
+# [END tf-destroy]
+
+options:
+  logging: CLOUD_LOGGING_ONLY
